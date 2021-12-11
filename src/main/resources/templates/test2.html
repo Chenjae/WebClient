@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Spring Boot</title>
+		<link rel="stylesheet" th:href="@{/bootstrap-4.6.0-dist/css/bootstrap.min.css}"/>
+		<script th:src="@{/jquery/jquery-3.5.1.min.js}"></script>
+		<script th:src="@{/bootstrap-4.6.0-dist/js/bootstrap.bundle.min.js}"></script>
+	</head>
+		
+	<body>
+		<div class="card m-2">
+			<div class="card-header">
+				게시물 목록
+			</div>
+			<div class="card-body">
+				<table class="table table-sm table-bordered">
+					<tr>
+						<th class="text-center" style="width:70px">글번호</th>
+						<th class="text-center">글제목</th>
+						<th class="text-center" style="width:120px">글쓴이</th>
+						<th class="text-center" style="width:90px">쓴날짜</th>
+					</tr>
+					
+					<tr th:each="board : ${boards}">
+						<td class="text-center">[[${board.bno}]]</td>
+						<!--/* <td><a th:href="${'boardDetail?bno=' + board.bno}">[[${board.btitle}]]</a></td> */-->
+						<!--/* <td><a th:href="'boardDetail?bno=' + ${board.bno}">[[${board.btitle}]]</a></td> */-->
+						<td><a th:href="@{boardDetail(bno=${board.bno})}">[[${board.btitle}]]</a></td>
+						<td class="text-center">[[${board.mid}]]</td>
+						<td class="text-center">[[${#dates.format(board.bdate, 'yyyy/MM/dd')}]]</td>
+					</tr>			
+					
+					<tr>
+						<td colspan="4" class="text-center">
+							<div>
+								<a class="btn btn-outline-primary btn-sm" 
+								   href="boardList?pageNo=1">처음</a>
+								
+								<a th:if="${pager.groupNo>1}" 
+								   class="btn btn-outline-info btn-sm" 
+								   th:href="'boardList?pageNo=' + ${pager.startPageNo-1}">이전</a>
+								
+								<th:block th:each="i : ${#numbers.sequence(pager.startPageNo, pager.endPageNo)}">
+									<a th:class="(${pager.pageNo != i})?'btn btn-outline-success btn-sm':'btn btn-danger btn-sm'" 
+									   th:href="'boardList?pageNo=' + ${i}">[[${i}]]</a> 
+									<!--/*
+									<a class="btn btn-sm" th:classappend="(${pager.pageNo != i})?'btn-outline-success':'btn-danger'" 
+									   th:href="'boardList?pageNo=' + ${i}">[[${i}]]</a>
+									*/-->
+								</th:block>
+								
+								<a th:if="${pager.groupNo<pager.totalGroupNo}" 
+								   class="btn btn-outline-info btn-sm" 
+								   th:href="'boardList?pageNo=' + ${pager.endPageNo+1}">다음</a>
+								   
+								<a class="btn btn-outline-primary btn-sm" 
+								   th:href="'boardList?pageNo='+${pager.totalPageNo}">맨끝</a>
+							</div>
+							
+							<!--/*
+							<div>
+								<a href="boardList?pageNo=1" class="btn btn-outline-primary btn-sm">처음</a>
+								<a th:if="${pager.groupNo>1}" th:href="@{boardList(pageNo=${pager.startPageNo-1})}" class="btn btn-outline-primary btn-sm">이전</a>
+								
+								<th:block th:each="i : ${#numbers.sequence(pager.startPageNo, pager.endPageNo)}">
+									<a class="btn btn-sm" th:classappend="(${pager.pageNo != i})?'btn-outline-success':'btn-danger'" 
+									   th:href="@{boardList(pageNo=${i})}">[[${i}]]</a>   
+									   
+								</th:block>
+								
+								<a th:if="${pager.groupNo<pager.totalGroupNo}" th:href="@{boardList(pageNo=${pager.endPageNo+1})}" class="btn btn-outline-primary btn-sm">다음</a>
+								<a th:href="@{boardList(pageNo=${pager.totalPageNo})}" class="btn btn-outline-primary btn-sm">맨끝</a>
+							</div>
+							*/-->
+						</td>
+					</tr>
+				</table>
+				
+				<div class="mt-2">
+					<a href="boardWriteForm" class="btn btn-sm btn-info">새글쓰기</a>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
